@@ -2,6 +2,7 @@ package com.ishong.programmers.practice.level2;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -33,13 +34,69 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * 따라서 7일째에 2개의 기능, 9일째에 1개의 기능이 배포됩니다.
  * 
  * 입출력 예 #2
- * 모든 기능이 하루에 1%씩 작업이 가능하므로, 작업이 끝나기까지 남은 일수는 각각 5일, 10일, 1일, 1일, 20일, 1일입니다. 어떤 기능이 먼저 완성되었더라도 앞에 있는 모든 기능이 완성되지 않으면 배포가 불가능합니다.
+ * 모든 기능이 하루에 1%씩 작업이 가능하므로, 작업이 끝나기까지 남은 일수는 각각 5일, 10일, 1일, 1일, 20일, 1일입니다. 어떤 기능이 먼저 완성되었더라도ㄴ 앞에 있는 모든 기능이 완성되지 않으면 배포가 불가능합니다.
  * 
  * 따라서 5일째에 1개의 기능, 10일째에 3개의 기능, 20일째에 2개의 기능이 배포됩니다.
  * @author ishong
  *
  */
 public class FunctionDevelop {
+	
+	public int[] solution(int[] progresses, int[] speeds) {
+		int[] answer = null;
+		Queue<Integer> queue = new LinkedList<Integer>();
+		List<Integer> completedList = new ArrayList<Integer>();
+
+		// 100% 완료될 때까지의 소요일 계산
+		for (int i = 0; i < progresses.length; i++) {
+			int elapsedDay = 0;
+			int remain = 100 - progresses[i];
+			
+			if (remain % speeds[i] != 0) {
+				// 나누어 떨어지지 않는 경우 당일 이후 +1일 소요
+				elapsedDay = remain / speeds[i] + 1;
+			} else {
+				// 나누어 떨어지는 경우 당일 마감됨
+				elapsedDay = remain / speeds[i];
+			}
+			
+			queue.offer(elapsedDay);
+		}
+		
+		int current = queue.poll();
+		
+		// 첫 번째 작업은 무조건 완료되었으므로 count = 1
+		int count = 1;
+		
+		while (!queue.isEmpty()) {
+			int next = queue.poll();
+			
+			if (current >= next) {
+				// 현재 작업과 소요일이 같거나 작은 작업은 완료되었으므로 count 증가
+				count++;
+			} else {
+				// 현재 작업과 소요일이 큰 작업은 함께 완료될 수 없으므로 현재까지 완료된 작업 수를 List에 추가
+				completedList.add(count);
+				
+				// count 초기화
+				count = 1;
+				
+				// 작업 소요일 갱신
+				current = next;
+			}
+		}
+		
+		completedList.add(count);
+		
+		answer = new int[completedList.size()];
+		
+		for (int i = 0; i < completedList.size(); i++) {
+			answer[i] = completedList.get(i);
+		}
+		
+		return answer;
+	}
+	
 	public static void main(String[] args) {
 		FunctionDevelop functionDevelop = new FunctionDevelop();
 		
@@ -76,50 +133,50 @@ public class FunctionDevelop {
 		System.out.println();
 	}
 	
-	/**
-	 * 코드 실행시 성공, 제출 후 채점하기에서 실패
-	 * @param progresses
-	 * @param speeds
-	 * @return
-	 */
-	public int[] solution(int[] progresses, int[] speeds) {
-        int[] answer = null;
-        List<Integer> answerList = new ArrayList<Integer>();
-        
-        do {
-        	int index = 0;
-        	
-        	for (int i = 0; i < progresses.length; i++) {
-        		// 1 Loop 당 1일, 진도를 증가시킴
-        		progresses[i] += speeds[i];
-        		
-        		// 이전 작업이 완료되었고 현재 작업도 완료되었을 경우
-        		if (index - i == 0 && progresses[i] >= 100) {
-        			index++;
-        		}
-        	}
-        	
-        	if (index > 0) {
-        		answerList.add(index);
-        		
-        		if (index == progresses.length) {
-        			break;
-        		}
-        		
-    			progresses = Arrays.copyOfRange(progresses, index, progresses.length);
-        	}
-        } while (progresses.length > 0);
-        
-        if (answerList.size() > 0) {
-        	answer = new int[answerList.size()];
-        	
-        	for (int i = 0; i < answerList.size(); i++) {
-        		answer[i] = answerList.get(i);
-        	}
-        }
-        
-        return answer;
-    }
+//	/**
+//	 * 코드 실행시 성공, 제출 후 채점하기에서 실패
+//	 * @param progresses
+//	 * @param speeds
+//	 * @return
+//	 */
+//	public int[] solution(int[] progresses, int[] speeds) {
+//        int[] answer = null;
+//        List<Integer> answerList = new ArrayList<Integer>();
+//        
+//        do {
+//        	int index = 0;
+//        	
+//        	for (int i = 0; i < progresses.length; i++) {
+//        		// 1 Loop 당 1일, 진도를 증가시킴
+//        		progresses[i] += speeds[i];
+//        		
+//        		// 이전 작업이 완료되었고 현재 작업도 완료되었을 경우
+//        		if (index - i == 0 && progresses[i] >= 100) {
+//        			index++;
+//        		}
+//        	}
+//        	
+//        	if (index > 0) {
+//        		answerList.add(index);
+//        		
+//        		if (index == progresses.length) {
+//        			break;
+//        		}
+//        		
+//    			progresses = Arrays.copyOfRange(progresses, index, progresses.length);
+//        	}
+//        } while (progresses.length > 0);
+//        
+//        if (answerList.size() > 0) {
+//        	answer = new int[answerList.size()];
+//        	
+//        	for (int i = 0; i < answerList.size(); i++) {
+//        		answer[i] = answerList.get(i);
+//        	}
+//        }
+//        
+//        return answer;
+//    }
 	
 	/**
 	 * 퍼옴
@@ -168,5 +225,26 @@ public class FunctionDevelop {
 			answer[i] = result.get(i);
 		}
 		return answer;
+	}
+	
+	/**
+	 * while 문에서 하루 하루 증가하다가 100을 넘으면 '배포일' 입니다. '배포일'에 해당 작업을 배포하고 다음 작업으로
+	 * 넘어갑니다(for 문). 다음 작업이 100을 넘었으면 같은 '배포일'의 배포 횟수가 올라갑니다. 100 미만이면 다음 '배포일'을 만날
+	 * 때까지 반복합니다.
+	 * 
+	 * @param progresses
+	 * @param speeds
+	 * @return
+	 */
+	public int[] otherSolution2(int[] progresses, int[] speeds) {
+		int[] dayOfend = new int[100];
+		int day = -1;
+		for (int i = 0; i < progresses.length; i++) {
+			while (progresses[i] + (day * speeds[i]) < 100) {
+				day++;
+			}
+			dayOfend[day]++;
+		}
+		return Arrays.stream(dayOfend).filter(i -> i != 0).toArray();
 	}
 }
