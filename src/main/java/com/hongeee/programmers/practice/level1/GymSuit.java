@@ -64,7 +64,7 @@ public class GymSuit {
 
         for (int i = 0;  i < lostList.size(); i++) {
             if (reserveList.contains(lostList.get(i))) {
-                reserveList.remove((Object) lostList.get(i));
+                reserveList.remove(lostList.get(i));
                 lostList.set(i, -1);
                 answer++;
             }
