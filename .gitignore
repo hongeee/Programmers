@@ -6,3 +6,5 @@
 *.MF
 target/classes/META-INF/maven/com.ishong/com.ishong.programmers/pom.xml
 target/classes/META-INF/maven/com.ishong/com.ishong.programmers/pom.properties
+/.idea/
+/programmers.iml
