@@ -85,7 +85,7 @@ public class StringCompression {
         	
         	// 길이만큼 잘라지는 만큼 queue에 넣고, 남는 문자열 처리
         	for (int i = 0; i < s.length(); i += unitLength) {
-				q.add(i + unitLength > s.length() ? s.substring(i, s.length())
+						q.add(i + unitLength > s.length() ? s.substring(i, s.length())
 						: s.substring(i, i + unitLength));
         	}
         	
